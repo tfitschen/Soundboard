@@ -1,0 +1,27 @@
+{
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "compilerOptions": {
+    "allowJs": false,
+    "inlineSourceMap": true,
+    "jsx": "react",
+    "module": "es6",
+    "noImplicitAny": true,
+    "target": "es6"
+  },
+  "filesGlob": [
+    "src/**/*.ts",
+    "src/component/*.tsx",
+    "typings/index.d.ts"
+  ],
+  "files": [
+    "src/audio/Manager.ts",
+    "src/audio/Sample.ts",
+    "src/main.ts",
+    "src/util/EventEmitter.ts",
+    "src/util/request.ts",
+    "src/component/Soundboard.tsx",
+    "typings/index.d.ts"
+  ]
+}
