@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Button} from "react-bootstrap";
 
 import audioManager from "../audio/Manager";
 import * as request from "../util/request";
@@ -73,14 +74,9 @@ const Soundboard = React.createClass({
             return (
                 <div className="col-sm-4 text-center" key={sound.name}>
                     <span>{sound.name} ({`${sound.duration}s`})</span>
-                    <button
-                        type="button"
-                        className="btn btn-default btn-block"
-                        onClick={this.handlePlaySoundClick.bind(this, sound)}
-                        disabled={this.state.playing}
-                        >
+                    <Button block disabled={this.state.playing} onClick={this.handlePlaySoundClick.bind(this, sound)}>
                         <span className="glyphicon glyphicon-play" aria-hidden="true"></span> Play
-                    </button>
+                    </Button>
                 </div>
             );
         });
@@ -88,9 +84,9 @@ const Soundboard = React.createClass({
         return (
             <div className="container-fluid soundboard">
                 <div className="row well">
-                    <button type="button" className="btn btn-default" onClick={this.handleStopClick} disabled={!this.state.playing}>
+                    <Button disabled={!this.state.playing} onClick={this.handleStopClick}>
                         <span className="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="row">
