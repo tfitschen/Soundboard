@@ -19,6 +19,20 @@ const soundboard = (state: SoundboardState = INITIAL_STATE, action: SoundActionI
                     .concat(Object.assign({}, action.sound))
             };
 
+        case SoundActionTypes.HIDE_SOUND:
+            return {
+                playing: state.playing,
+                sounds: state.sounds.map(sound => {
+                    const newSound = Object.assign({}, sound);
+
+                    if (sound.name === action.sound.name) {
+                        newSound.show = false;
+                    }
+
+                    return newSound;
+                })
+            };
+
         case SoundActionTypes.PLAY_SOUND:
             return {
                 playing: true,
@@ -27,6 +41,20 @@ const soundboard = (state: SoundboardState = INITIAL_STATE, action: SoundActionI
 
                     if (sound.name === action.sound.name) {
                         newSound.playCount++;
+                    }
+
+                    return newSound;
+                })
+            };
+
+        case SoundActionTypes.SHOW_SOUND:
+            return {
+                playing: state.playing,
+                sounds: state.sounds.map(sound => {
+                    const newSound = Object.assign({}, sound);
+
+                    if (sound.name === action.sound.name) {
+                        newSound.show = true;
                     }
 
                     return newSound;

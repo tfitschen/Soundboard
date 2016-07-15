@@ -7,6 +7,7 @@
     "redux": "registry:dt/redux#3.5.2+20160703092728"
   },
   "dependencies": {
-    "react-redux": "registry:npm/react-redux#4.4.0+20160614222153"
+    "react-redux": "registry:npm/react-redux#4.4.0+20160614222153",
+    "react-router": "registry:npm/react-router#2.4.0+20160628165748"
   }
 }

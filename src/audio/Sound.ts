@@ -3,6 +3,7 @@ interface SoundInterface {
     url: string;
     duration: number;
     playCount: number;
+    show: boolean;
 }
 
 export default SoundInterface;

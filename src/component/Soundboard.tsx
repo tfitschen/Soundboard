@@ -1,11 +1,9 @@
 import * as React from "react";
 import {Button} from "react-bootstrap";
 import {connect} from "react-redux";
+import {Link} from "react-router";
 
-import addSoundAction from "../action/Add";
-import playSoundAction from "../action/Play";
-import stopSoundAction from "../action/Stop";
-import SoundActionInterface from "../action/Action";
+import SoundActionInterface, {addSoundAction, playSoundAction, stopSoundAction} from "../action/Action";
 
 import audioManager from "../audio/Manager";
 import SoundInterface from "../audio/Sound";
@@ -35,15 +33,17 @@ function mapDispatchToProps(dispatch: (action: any) => any): Object {
 class Soundboard extends React.Component<SoundboardProps, void> {
 
     componentWillMount() {
-        request
-            .getJSON<Array<SoundInterface>>("audio/index.json")
-            .then(sounds =>
-                Promise.all(sounds.map(sound =>
-                    audioManager.load(sound.url).then(() =>
-                        this.props.add(Object.assign({playCount: 0}, sound))
-                    )
-                ))
-            );
+        if (this.props.sounds.length === 0) {
+            request
+                .getJSON<Array<SoundInterface>>("audio/index.json")
+                .then(sounds =>
+                    Promise.all(sounds.map(sound =>
+                        audioManager.load(sound.url).then(() =>
+                            this.props.add(Object.assign({playCount: 0, show: true}, sound))
+                        )
+                    ))
+                );
+        }
 
         this._onSoundStopedListener = this._onSoundStopedHandler.bind(this);
         audioManager.events.stopped.on(this._onSoundStopedListener);
@@ -58,7 +58,7 @@ class Soundboard extends React.Component<SoundboardProps, void> {
 
     render() {
         const {playing, sounds, play, stop} = this.props;
-        const buttons = sounds.map((sound: SoundInterface) => {
+        const buttons = sounds.filter(sound => sound.show).map((sound: SoundInterface) => {
             return (
                 <div className="col-sm-4 text-center" key={sound.name}>
                     <span>{sound.name} ({`${sound.duration}s`}) <span className="badge">{sound.playCount}</span></span>
@@ -75,6 +75,9 @@ class Soundboard extends React.Component<SoundboardProps, void> {
                     <Button disabled={!playing} onClick={() => stop()}>
                         <span className="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop
                     </Button>
+                    <Link className="btn btn-default pull-right" to="/settings">
+                        <span className="glyphicon glyphicon-wrench" aria-hidden="true"></span> Settings
+                    </Link>
                 </div>
 
                 <div className="row">

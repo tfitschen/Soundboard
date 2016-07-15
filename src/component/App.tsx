@@ -1,14 +1,18 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {Provider} from "react-redux";
+import {Router, Route, hashHistory} from "react-router";
 import {applyMiddleware, createStore} from "redux";
 
 import Soundboard from "./Soundboard";
-import soundboardApp from "../reducer/index";
+import Settings from "./Settings";
 
 import audioManager from "../audio/Manager";
 import SoundActionInterface from "../action/Action";
 import SoundActionTypes from "../action/types";
+
+import soundboardApp from "../reducer/index";
+
 const playSound = (store: any) => (next: (data: any) => any) => (action: SoundActionInterface) => {
     if (!action || action.type !== SoundActionTypes.PLAY_SOUND) {
         return next(action);
@@ -35,7 +39,10 @@ export default function render(dom: HTMLElement): void {
 
     ReactDOM.render(
         <Provider store={store}>
-            <Soundboard />
+            <Router history={hashHistory}>
+                <Route path="/" component={Soundboard} />
+                <Route path="/settings" component={Settings} />
+            </Router>
         </Provider>,
         dom
     );
