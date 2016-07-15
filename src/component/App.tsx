@@ -1,7 +1,8 @@
 import * as React from "react";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import * as ReactDOM from "react-dom";
 import {Provider} from "react-redux";
-import {Router, Route, hashHistory} from "react-router";
+import {IndexRoute, Router, Route, hashHistory} from "react-router";
 import {applyMiddleware, createStore} from "redux";
 
 import Soundboard from "./Soundboard";
@@ -33,6 +34,25 @@ const stopSound = (store: any) => (next: any) => (action: SoundActionInterface) 
     return next(action);
 };
 
+class App extends React.Component<any, any> {
+
+    render() {
+        const path = location.hash.replace(/^#\/|\?.*$/g, "") || "root";
+
+        return (
+            <ReactCSSTransitionGroup
+                component="div"
+                transitionName={path === "root" ? "example-out" : "example-in"}
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={500}
+            >
+                {React.cloneElement(this.props.children, {key: path})}
+            </ReactCSSTransitionGroup>
+        );
+    }
+
+}
+
 export default function render(dom: HTMLElement): void {
     const createStoreWithMiddleware = applyMiddleware(playSound, stopSound)(createStore);
     const store = createStoreWithMiddleware(soundboardApp, {});
@@ -40,8 +60,10 @@ export default function render(dom: HTMLElement): void {
     ReactDOM.render(
         <Provider store={store}>
             <Router history={hashHistory}>
-                <Route path="/" component={Soundboard} />
-                <Route path="/settings" component={Settings} />
+                <Route path="/" component={App}>
+                    <IndexRoute component={Soundboard} />
+                    <Route path="settings" component={Settings} />
+                </Route>
             </Router>
         </Provider>,
         dom

@@ -1,2 +1,57 @@
 @charset "UTF-8";
 @import "bootstrap.less";
+
+.example-in-enter {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translateX(100%);
+    width: 100%;
+}
+
+.example-in-enter.example-in-enter-active {
+    transform: translateX(0%);
+    transition: transform 500ms linear;
+}
+
+.example-in-leave {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translateX(0%);
+    width: 100%;
+}
+
+
+.example-in-leave.example-in-leave-active {
+    transform: translateX(-100%);
+    transition: transform 500ms linear;
+}
+
+
+.example-out-enter {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translateX(-100%);
+    width: 100%;
+}
+
+.example-out-enter.example-out-enter-active {
+    transform: translateX(0%);
+    transition: transform 500ms linear;
+}
+
+.example-out-leave {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translateX(0%);
+    width: 100%;
+}
+
+
+.example-out-leave.example-out-leave-active {
+    transform: translateX(100%);
+    transition: transform 500ms linear;
+}
