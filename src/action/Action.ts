@@ -18,4 +18,4 @@ export const addSoundAction = (sound: SoundInterface) => createAction(ActionType
 export const hideSoundAction = (sound: SoundInterface) => createAction(ActionTypes.HIDE_SOUND, sound);
 export const playSoundAction = (sound: SoundInterface) => createAction(ActionTypes.PLAY_SOUND, sound);
 export const showSoundAction = (sound: SoundInterface) => createAction(ActionTypes.SHOW_SOUND, sound);
-export const stopSoundAction = () => createAction(ActionTypes.HIDE_SOUND, undefined);
+export const stopSoundAction = () => createAction(ActionTypes.STOP_SOUND, undefined);
