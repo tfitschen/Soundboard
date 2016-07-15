@@ -40,7 +40,7 @@ class Soundboard extends React.Component<SoundboardProps, void> {
             .then(sounds =>
                 Promise.all(sounds.map(sound =>
                     audioManager.load(sound.url).then(() =>
-                        this.props.add(sound)
+                        this.props.add(Object.assign({playCount: 0}, sound))
                     )
                 ))
             );
@@ -61,7 +61,7 @@ class Soundboard extends React.Component<SoundboardProps, void> {
         const buttons = sounds.map((sound: SoundInterface) => {
             return (
                 <div className="col-sm-4 text-center" key={sound.name}>
-                    <span>{sound.name} ({`${sound.duration}s`})</span>
+                    <span>{sound.name} ({`${sound.duration}s`}) <span className="badge">{sound.playCount}</span></span>
                     <Button block disabled={playing} onClick={() => play(sound)}>
                         <span className="glyphicon glyphicon-play" aria-hidden="true"></span> Play
                     </Button>

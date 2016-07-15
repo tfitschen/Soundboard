@@ -14,19 +14,29 @@ const soundboard = (state: SoundboardState = INITIAL_STATE, action: SoundActionI
         case SoundActionTypes.ADD_SOUND:
             return {
                 playing: state.playing,
-                sounds: state.sounds.concat(action.sound)
+                sounds: state.sounds
+                    .map(sound => Object.assign({}, sound))
+                    .concat(Object.assign({}, action.sound))
             };
 
         case SoundActionTypes.PLAY_SOUND:
             return {
                 playing: true,
-                sounds: state.sounds.slice()
+                sounds: state.sounds.map(sound => {
+                    const newSound = Object.assign({}, sound);
+
+                    if (sound.name === action.sound.name) {
+                        newSound.playCount++;
+                    }
+
+                    return newSound;
+                })
             };
 
         case SoundActionTypes.STOP_SOUND:
             return {
                 playing: false,
-                sounds: state.sounds.slice()
+                sounds: state.sounds.map(sound => Object.assign({}, sound))
             };
 
         default:
