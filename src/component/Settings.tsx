@@ -61,7 +61,7 @@ class Settings extends React.Component<SettingsProps, any> {
             <div className="container-fluid settings">
                 <div className="row well">
                     <Link className="btn btn-default" to="/">
-                        <span className="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Settings
+                        <span className="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Soundboard
                     </Link>
                 </div>
 
