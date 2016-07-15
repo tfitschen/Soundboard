@@ -1,80 +1,68 @@
 import * as React from "react";
 import {Button} from "react-bootstrap";
+import {connect} from "react-redux";
+
+import addSoundAction from "../action/Add";
+import playSoundAction from "../action/Play";
+import stopSoundAction from "../action/Stop";
+import SoundActionInterface from "../action/Action";
 
 import audioManager from "../audio/Manager";
+import SoundInterface from "../audio/Sound";
 import * as request from "../util/request";
+import {SoundboardState} from "../reducer/soundboard";
 
-interface SoundInterface {
-    name: string;
-    url: string;
-    duration: number;
+interface SoundboardProps extends React.Props<any> {
+    playing?: boolean;
+    sounds?: Array<SoundInterface>;
+    add?(sound: SoundInterface): any;
+    play?(sound: SoundInterface): any;
+    stop?(): any;
 }
 
-const Soundboard = React.createClass({
-    getInitialState: function () {
-        return {
-            playing: false,
-            sounds: new Array<SoundInterface>(),
-        };
-    },
+function mapStateToProps({soundboard}: {soundboard: SoundboardState}): SoundboardState {
+    return soundboard;
+}
 
-    componentDidMount: function () {
-        audioManager.events.playing.on(this.handleOnPlaying);
-        audioManager.events.stopped.on(this.handleOnStopped);
+function mapDispatchToProps(dispatch: (action: any) => any): Object {
+    return {
+        add: (sound: SoundInterface) => dispatch(addSoundAction(sound)),
+        play: (sound: SoundInterface) => dispatch(playSoundAction(sound)),
+        stop: () => dispatch(stopSoundAction())
+    };
+}
 
+class Soundboard extends React.Component<SoundboardProps, void> {
+
+    componentWillMount() {
         request
             .getJSON<Array<SoundInterface>>("audio/index.json")
-            .then(function (sounds) {
-                return Promise.all(sounds.map(function (sound) {
-                    return audioManager.load(sound.url).then(() => sound);
-                }));
-            })
-            .then((sounds) => this.setState({playing: this.state.playing, sounds}))
-            .catch(function (err) {
-                console.log(err);
-            });
-    },
+            .then(sounds =>
+                Promise.all(sounds.map(sound =>
+                    audioManager.load(sound.url).then(() =>
+                        this.props.add(sound)
+                    )
+                ))
+            );
 
-    componentWillUnmount: function () {
-        audioManager.events.playing.off(this.handleOnPlaying);
-        audioManager.events.stopped.off(this.handleOnStopped);
-    },
+        this._onSoundStopedListener = this._onSoundStopedHandler.bind(this);
+        audioManager.events.stopped.on(this._onSoundStopedListener);
+    }
 
-    handleOnPlaying: function () {
-        if (this.state.playing) {
-            return;
+    componentWillUnmount() {
+        if (this._onSoundStopedListener) {
+            audioManager.events.stopped.off(this._onSoundStopedListener);
+            this._onSoundStopedListener = null;
         }
+    }
 
-        this.setState({playing: true, sounds: this.state.sounds});
-    },
-
-    handleOnStopped: function () {
-        this.setState({playing: false, sounds: this.state.sounds});
-    },
-
-    handlePlaySoundClick: function (sound: SoundInterface) {
-        this.setState({playing: true, sounds: this.state.sounds});
-        audioManager
-            .load(sound.url)
-            .then(function (sample) {
-                audioManager.play(sample);
-            })
-            .catch((err) => {
-                console.error(err);
-                this.setState({playing: false, sounds: this.state.sounds});
-            });
-    },
-
-    handleStopClick: function () {
-        audioManager.stop();
-    },
-
-    render: function () {
-        const buttons = this.state.sounds.map((sound: SoundInterface) => {
+    render() {
+        const {playing, sounds, play, stop} = this.props;
+        const buttons = sounds.map((sound: SoundInterface) => {
             return (
                 <div className="col-sm-4 text-center" key={sound.name}>
                     <span>{sound.name} ({`${sound.duration}s`})</span>
-                    <Button block disabled={this.state.playing} onClick={this.handlePlaySoundClick.bind(this, sound)}>
+                    <Button block disabled={playing} onClick={() => play(sound)}>
                         <span className="glyphicon glyphicon-play" aria-hidden="true"></span> Play
                     </Button>
                 </div>
@@ -84,7 +72,7 @@ const Soundboard = React.createClass({
         return (
             <div className="container-fluid soundboard">
                 <div className="row well">
-                    <Button disabled={!this.state.playing} onClick={this.handleStopClick}>
+                    <Button disabled={!playing} onClick={() => stop()}>
                         <span className="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop
                     </Button>
                 </div>
@@ -96,6 +84,12 @@ const Soundboard = React.createClass({
         );
     }
 
-});
+    private _onSoundStopedListener: () => void;
 
-export default Soundboard;
+    private _onSoundStopedHandler(): void {
+        this.props.stop();
+    }
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Soundboard);

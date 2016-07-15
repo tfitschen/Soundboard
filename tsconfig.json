@@ -16,11 +16,20 @@
     "typings/index.d.ts"
   ],
   "files": [
+    "src/action/Action.ts",
+    "src/action/Add.ts",
+    "src/action/Play.ts",
+    "src/action/Stop.ts",
+    "src/action/types.ts",
     "src/audio/Manager.ts",
     "src/audio/Sample.ts",
+    "src/audio/Sound.ts",
     "src/main.ts",
+    "src/reducer/index.ts",
+    "src/reducer/soundboard.ts",
     "src/util/EventEmitter.ts",
     "src/util/request.ts",
+    "src/component/App.tsx",
     "src/component/Soundboard.tsx",
     "typings/index.d.ts"
   ]
